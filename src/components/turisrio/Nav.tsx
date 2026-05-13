@@ -18,7 +18,7 @@ export function Nav() {
         <div className="hidden md:flex items-center gap-1 text-sm text-muted-foreground">
           <Link to="/" className="px-3 py-2 rounded-full hover:text-foreground" activeOptions={{ exact: true }} activeProps={{ className: "text-foreground bg-secondary" }}>Início</Link>
           {user && <>
-            <Link to="/chat" className="px-3 py-2 rounded-full hover:text-foreground" activeProps={{ className: "text-foreground bg-secondary" }}>Concierge</Link>
+            <Link to="/chat" className="px-3 py-2 rounded-full hover:text-foreground" activeProps={{ className: "text-foreground bg-secondary" }}>Assistente</Link>
             <Link to="/favoritos" className="px-3 py-2 rounded-full hover:text-foreground" activeProps={{ className: "text-foreground bg-secondary" }}>Favoritos</Link>
             <Link to="/perfil" className="px-3 py-2 rounded-full hover:text-foreground" activeProps={{ className: "text-foreground bg-secondary" }}>Perfil</Link>
           </>}

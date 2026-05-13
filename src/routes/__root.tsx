@@ -74,10 +74,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "TurisRio — Concierge de Viagens no Rio de Janeiro" },
-      { name: "description", content: "Concierge digital com IA para descobrir praias, mirantes, restaurantes e roteiros personalizados no Rio de Janeiro." },
+      { title: "TurisRio — Guia de Viagens com IA no Rio de Janeiro" },
+      { name: "description", content: "Site de turismo do Rio de Janeiro com ajuda de IA: pontos turísticos, gastronomia, hospedagem e roteiros personalizados." },
       { name: "author", content: "TurisRio" },
-      { property: "og:title", content: "TurisRio — Concierge de Viagens no Rio" },
+      { property: "og:title", content: "TurisRio — Guia de Viagens com IA no Rio" },
       { property: "og:description", content: "Roteiros personalizados, dicas locais e um assistente de IA dedicado ao Rio de Janeiro." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

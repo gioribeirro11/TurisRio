@@ -123,7 +123,7 @@ const faq = [
   { q: "É seguro andar pela cidade?", a: "Sim, com bom senso. Use aplicativos de transporte à noite, evite ostentar objetos e prefira praias e bairros movimentados." },
   { q: "Como funciona o transporte público?", a: "Metrô atende Centro, Zona Sul e Barra. Use o cartão Riocard ou pagamento por aproximação." },
   { q: "Preciso falar português?", a: "Em hotéis e atrações principais há atendimento em inglês e espanhol, mas algumas palavras em português ajudam muito." },
-  { q: "O TurisRio cobra alguma taxa?", a: "Não. O uso do concierge e dos roteiros é gratuito — alguns hotéis e experiências são patrocinados e estão sinalizados." },
+  { q: "O TurisRio cobra alguma taxa?", a: "Não. O uso do assistente e dos roteiros é gratuito — alguns hotéis e experiências são patrocinados e estão sinalizados." },
 ];
 
 const supportSchema = z.object({
@@ -167,7 +167,7 @@ function Index() {
 
         <div className="relative z-10 max-w-6xl mx-auto px-6 pt-40 pb-24 min-h-[100svh] flex flex-col justify-center">
           <span className="glass-dark inline-flex items-center gap-2 self-start px-4 py-2 rounded-full text-xs uppercase tracking-[0.2em]">
-            <Sparkles className="size-3" /> Concierge digital · Rio de Janeiro
+            <Sparkles className="size-3" /> Assistente digital · Rio de Janeiro
           </span>
           <h1 className="editorial text-5xl sm:text-7xl md:text-8xl mt-6 max-w-4xl text-white drop-shadow-2xl">
             Viva o Rio<br />
@@ -179,7 +179,7 @@ function Index() {
           <div className="mt-10 flex flex-wrap gap-3">
             <Link to={ctaTo}
               className="group inline-flex items-center gap-2 gradient-gold text-primary px-6 py-3.5 rounded-full font-semibold shadow-glow hover:scale-[1.02] transition">
-              Conversar com o Concierge <ArrowRight className="size-4 group-hover:translate-x-1 transition" />
+              Conversar com a IA <ArrowRight className="size-4 group-hover:translate-x-1 transition" />
             </Link>
             <a href="#pontos" className="glass inline-flex items-center gap-2 text-white px-6 py-3.5 rounded-full font-medium border border-white/20">
               Explorar pontos turísticos
@@ -363,7 +363,7 @@ function Index() {
         </Accordion>
         <p className="mt-8 text-sm text-muted-foreground">
           Não encontrou? <Link to={ctaTo} className="text-primary underline inline-flex items-center gap-1">
-            <MessageCircle className="size-3.5" /> Pergunte ao Concierge
+            <MessageCircle className="size-3.5" /> Pergunte à IA
           </Link> ou <a href="#suporte" className="underline">abra um chamado</a>.
         </p>
       </section>
@@ -377,7 +377,7 @@ function Index() {
           <div className="absolute -top-20 -right-20 size-80 rounded-full opacity-30 gradient-gold blur-3xl" />
           <div className="relative">
             <h2 className="editorial text-4xl sm:text-5xl max-w-2xl">Pronto para descobrir o seu Rio?</h2>
-            <p className="mt-4 max-w-xl opacity-90">Crie sua conta e converse com o Concierge — roteiros, dicas e favoritos guardados para sua próxima viagem.</p>
+            <p className="mt-4 max-w-xl opacity-90">Crie sua conta e converse com o assistente de IA — roteiros, dicas e favoritos guardados para sua próxima viagem.</p>
             <Link to={ctaTo} className="inline-flex items-center gap-2 mt-8 bg-white text-primary px-6 py-3.5 rounded-full font-semibold hover:scale-[1.02] transition">
               Começar agora <ArrowRight className="size-4" />
             </Link>
@@ -386,7 +386,7 @@ function Index() {
       </section>
 
       <footer className="border-t border-border/60 py-8 text-center text-sm text-muted-foreground">
-        TurisRio · Concierge de viagens · Rio de Janeiro, Brasil
+        TurisRio · Guia de viagens com IA · Rio de Janeiro, Brasil
       </footer>
     </div>
   );
