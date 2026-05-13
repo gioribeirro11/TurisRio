@@ -1,6 +1,6 @@
 import { Link, useRouter } from "@tanstack/react-router";
 import { useAuth } from "@/contexts/AuthContext";
-import { Mountain, MessageCircle, Heart, User, LogOut } from "lucide-react";
+import { Mountain, Heart, LogOut } from "lucide-react";
 
 export function Nav() {
   const { user, signOut } = useAuth();
@@ -17,16 +17,19 @@ export function Nav() {
         </Link>
         <div className="hidden md:flex items-center gap-1 text-sm text-muted-foreground">
           <Link to="/" className="px-3 py-2 rounded-full hover:text-foreground" activeOptions={{ exact: true }} activeProps={{ className: "text-foreground bg-secondary" }}>Início</Link>
-          {user && <>
-            <Link to="/chat" className="px-3 py-2 rounded-full hover:text-foreground" activeProps={{ className: "text-foreground bg-secondary" }}>Assistente</Link>
+          <a href="/#pontos" className="px-3 py-2 rounded-full hover:text-foreground">Pontos</a>
+          <a href="/#roteiros" className="px-3 py-2 rounded-full hover:text-foreground">Roteiros</a>
+          <a href="/#eventos" className="px-3 py-2 rounded-full hover:text-foreground">Eventos</a>
+          <a href="/#restaurantes" className="px-3 py-2 rounded-full hover:text-foreground">Gastronomia</a>
+          <a href="/#hospedagem" className="px-3 py-2 rounded-full hover:text-foreground">Hospedagem</a>
+          <a href="/#guia" className="px-3 py-2 rounded-full hover:text-foreground">Guia</a>
+          {user && (
             <Link to="/favoritos" className="px-3 py-2 rounded-full hover:text-foreground" activeProps={{ className: "text-foreground bg-secondary" }}>Favoritos</Link>
-            <Link to="/perfil" className="px-3 py-2 rounded-full hover:text-foreground" activeProps={{ className: "text-foreground bg-secondary" }}>Perfil</Link>
-          </>}
+          )}
         </div>
         <div className="flex items-center gap-2">
           {user ? (
             <>
-              <Link to="/chat" className="md:hidden p-2 rounded-full hover:bg-secondary"><MessageCircle className="size-4" /></Link>
               <Link to="/favoritos" className="md:hidden p-2 rounded-full hover:bg-secondary"><Heart className="size-4" /></Link>
               <button onClick={async () => { await signOut(); router.navigate({ to: "/" }); }}
                 className="p-2 rounded-full hover:bg-secondary text-muted-foreground" aria-label="Sair">

@@ -1,13 +1,14 @@
 import { useMemo, useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Nav } from "@/components/turisrio/Nav";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
 import {
-  ArrowRight, Sparkles, MapPin, Compass, Sun, Clock, Ticket, Lightbulb,
-  Utensils, Music, Building2, BadgeCheck, ExternalLink, MessageCircle, LifeBuoy, ChevronDown,
+  ArrowRight, MapPin, Clock, Ticket, Lightbulb, Utensils, Music, Building2,
+  BadgeCheck, ExternalLink, LifeBuoy, ChevronDown, Calendar, Route as RouteIcon,
+  Sun, Sparkles, BookOpen,
 } from "lucide-react";
 import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
@@ -25,8 +26,10 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "TurisRio — Viva o Rio do seu jeito" },
-      { name: "description", content: "Pontos turísticos, gastronomia, hospedagem e roteiros personalizados por IA no Rio de Janeiro." },
+      { title: "TurisRio — Guia de Turismo do Rio de Janeiro" },
+      { name: "description", content: "Guia completo do Rio de Janeiro: pontos turísticos, roteiros, eventos, restaurantes e hospedagem com links diretos para reserva." },
+      { property: "og:title", content: "TurisRio — Guia de Turismo do Rio de Janeiro" },
+      { property: "og:description", content: "Guia completo do Rio: pontos turísticos, roteiros, eventos, restaurantes e hospedagem." },
     ],
   }),
 });
@@ -36,51 +39,77 @@ type Tag = "Praia" | "Mirante" | "Aventura" | "Cultura" | "Família" | "Românti
 const pontos: {
   name: string; img: string; desc: string; horario: string; preco: string; dica: string; tags: Tag[];
 }[] = [
-  {
-    name: "Cristo Redentor", img: christImg,
+  { name: "Cristo Redentor", img: christImg,
     desc: "Vista 360º do Rio do alto do Corcovado, em meio à Mata Atlântica.",
     horario: "08h–19h, todos os dias", preco: "A partir de R$ 109",
-    dica: "Vá cedo (8h) para evitar filas e nuvens.", tags: ["Mirante", "Família", "Romântico"],
-  },
-  {
-    name: "Praia de Copacabana", img: beachImg,
+    dica: "Vá cedo (8h) para evitar filas e nuvens.", tags: ["Mirante", "Família", "Romântico"] },
+  { name: "Praia de Copacabana", img: beachImg,
     desc: "Calçadão icônico, quiosques, vôlei e o pôr do sol carioca por excelência.",
     horario: "Acesso 24h", preco: "Grátis",
-    dica: "Posto 6 ao entardecer — caipirinha e roda de samba.", tags: ["Praia", "Família", "Grátis"],
-  },
-  {
-    name: "Pão de Açúcar", img: sugarloafImg,
+    dica: "Posto 6 ao entardecer — caipirinha e roda de samba.", tags: ["Praia", "Família", "Grátis"] },
+  { name: "Pão de Açúcar", img: sugarloafImg,
     desc: "Bondinho em duas etapas até 396m sobre a Baía de Guanabara.",
     horario: "08h–19h50", preco: "A partir de R$ 150",
-    dica: "Suba antes do pôr do sol e desça com a cidade iluminada.", tags: ["Aventura", "Mirante", "Romântico"],
-  },
-  {
-    name: "Escadaria Selarón", img: selaronImg,
+    dica: "Suba antes do pôr do sol e desça com a cidade iluminada.", tags: ["Aventura", "Mirante", "Romântico"] },
+  { name: "Escadaria Selarón", img: selaronImg,
     desc: "215 degraus cobertos por azulejos do mundo inteiro, em Santa Teresa.",
     horario: "Acesso 24h (visite de dia)", preco: "Grátis",
-    dica: "Combine com almoço no bairro da Lapa logo abaixo.", tags: ["Cultura", "Grátis"],
-  },
-  {
-    name: "Arcos da Lapa", img: lapaImg,
+    dica: "Combine com almoço no bairro da Lapa logo abaixo.", tags: ["Cultura", "Grátis"] },
+  { name: "Arcos da Lapa", img: lapaImg,
     desc: "Aqueduto colonial e epicentro da vida noturna e do samba carioca.",
     horario: "Vida noturna: 20h–04h", preco: "Grátis (bares à parte)",
-    dica: "Sextas têm Pedra do Sal: samba de roda imperdível.", tags: ["Cultura", "Grátis"],
-  },
-  {
-    name: "Jardim Botânico", img: heroImg,
+    dica: "Sextas têm Pedra do Sal: samba de roda imperdível.", tags: ["Cultura", "Grátis"] },
+  { name: "Jardim Botânico", img: heroImg,
     desc: "140 hectares de palmeiras imperiais, orquidário e fauna nativa.",
     horario: "08h–17h", preco: "R$ 35",
-    dica: "Leve repelente — e visite o Bosque dos Macaquinhos.", tags: ["Família", "Cultura"],
-  },
+    dica: "Leve repelente — visite o Bosque dos Macaquinhos.", tags: ["Família", "Cultura"] },
 ];
 
 const TAGS: Tag[] = ["Praia", "Mirante", "Aventura", "Cultura", "Família", "Romântico", "Grátis"];
 
-const experiencias = [
-  { icon: Sparkles, title: "Roteiros sob medida", desc: "Itinerários gerados por IA, ajustados ao seu ritmo, gosto e tempo." },
-  { icon: MapPin, title: "Bairros autênticos", desc: "Santa Teresa, Lapa, Ipanema, Urca — o Rio dos cariocas." },
-  { icon: Compass, title: "Dicas locais", desc: "Onde comer, beber e curtir longe das armadilhas turísticas." },
-  { icon: Sun, title: "Segurança & transporte", desc: "Como circular tranquilo entre praias, mirantes e a vida noturna." },
+const roteiros = [
+  {
+    titulo: "Rio em 3 dias — o essencial",
+    duracao: "3 dias", publico: "Primeira viagem",
+    paradas: ["Cristo Redentor", "Pão de Açúcar", "Copacabana", "Lapa & Selarón", "Ipanema ao pôr do sol"],
+    img: christImg,
+  },
+  {
+    titulo: "Praia & relax em 2 dias",
+    duracao: "2 dias", publico: "Casal / descanso",
+    paradas: ["Praia do Leme", "Pedra do Arpoador", "Ipanema (Posto 9)", "Pôr do sol no Mirante do Leblon"],
+    img: beachImg,
+  },
+  {
+    titulo: "Aventura & natureza em 4 dias",
+    duracao: "4 dias", publico: "Trilheiros",
+    paradas: ["Pedra Bonita", "Vidigal — Dois Irmãos", "Floresta da Tijuca", "Praia Vermelha & Pista Cláudio Coutinho"],
+    img: sugarloafImg,
+  },
+];
+
+const eventos = [
+  { mes: "Fev / Mar", nome: "Carnaval do Rio", local: "Sambódromo + 500 blocos de rua", preco: "Grátis (camarote pago)" },
+  { mes: "Abr", nome: "Tomorrowland Brasil (anos pares)", local: "Itu / Rio (eventos satélite)", preco: "A partir de R$ 800" },
+  { mes: "Jun", nome: "Festa Junina da Quinta da Boa Vista", local: "São Cristóvão", preco: "Grátis" },
+  { mes: "Set", nome: "Rock in Rio (anos ímpares)", local: "Parque Olímpico", preco: "A partir de R$ 695" },
+  { mes: "Dez", nome: "Réveillon de Copacabana", local: "Praia de Copacabana", preco: "Grátis" },
+  { mes: "Ano todo", nome: "Maracanã — jogos de futebol", local: "Estádio do Maracanã", preco: "A partir de R$ 60" },
+];
+
+const restaurantes = [
+  { nome: "Aprazível", bairro: "Santa Teresa", cozinha: "Brasileira contemporânea",
+    desc: "Vista panorâmica da Baía de Guanabara, ambiente ao ar livre entre árvores.", preco: "$$$" },
+  { nome: "Confeitaria Colombo", bairro: "Centro", cozinha: "Café & doces",
+    desc: "Salão belle époque de 1894, ponto histórico para chá da tarde e pastéis de Belém.", preco: "$$" },
+  { nome: "Casa da Feijoada", bairro: "Ipanema", cozinha: "Brasileira tradicional",
+    desc: "Feijoada todos os dias, com cinco tipos de carne e acompanhamentos clássicos.", preco: "$$" },
+  { nome: "Bar Urca", bairro: "Urca", cozinha: "Petiscos & cerveja",
+    desc: "Pastéis de camarão na mureta da Baía, com pôr do sol atrás do Pão de Açúcar.", preco: "$" },
+  { nome: "Oro", bairro: "Leblon", cozinha: "Alta gastronomia",
+    desc: "Estrela Michelin do chef Felipe Bronze, menu degustação com produtos brasileiros.", preco: "$$$$" },
+  { nome: "Galeto Sat's", bairro: "Copacabana", cozinha: "Galetos",
+    desc: "Tradição de 60 anos: frango assado, polenta frita e chope gelado.", preco: "$" },
 ];
 
 const cultura = [
@@ -96,25 +125,37 @@ const pratos = [
   { nome: "Caipirinha", desc: "Cachaça artesanal, limão tahiti, no quiosque." },
 ];
 
-// Sponsored — patrocinadores
 const hospedagens = [
-  {
-    name: "Belmond Copacabana Palace", tier: "Patrocinado · Luxo",
+  { name: "Belmond Copacabana Palace", tier: "Patrocinado · Luxo",
     desc: "Ícone art déco em frente a Copacabana, piscina histórica e spa premiado.",
-    preco: "A partir de R$ 2.890/noite", url: "https://www.belmond.com/hotels/south-america/brazil/rio-de-janeiro/belmond-copacabana-palace/",
-    img: hotelImg,
-  },
-  {
-    name: "Hotel Fasano Ipanema", tier: "Patrocinado · Boutique",
+    preco: "A partir de R$ 2.890/noite",
+    url: "https://www.belmond.com/hotels/south-america/brazil/rio-de-janeiro/belmond-copacabana-palace/", img: hotelImg },
+  { name: "Hotel Fasano Ipanema", tier: "Patrocinado · Boutique",
     desc: "Design assinado por Philippe Starck, rooftop com vista para o Arpoador.",
-    preco: "A partir de R$ 1.950/noite", url: "https://www.fasano.com.br/hospedagem/rio-de-janeiro",
-    img: sugarloafImg,
+    preco: "A partir de R$ 1.950/noite",
+    url: "https://www.fasano.com.br/hospedagem/rio-de-janeiro", img: sugarloafImg },
+  { name: "Selina Lapa Rio", tier: "Patrocinado · Hostel design",
+    desc: "Coworking, eventos e quartos compartilhados no coração da Lapa.",
+    preco: "A partir de R$ 120/noite",
+    url: "https://www.selina.com/brazil/lapa-rio/", img: lapaImg },
+];
+
+const guia = [
+  {
+    title: "1. O melhor pôr do sol da cidade",
+    body: "Para um pôr do sol inesquecível, suba a Pedra do Arpoador 40 minutos antes do horário oficial. Quando o sol toca o mar, a multidão aplaude — uma tradição carioca desde os anos 70. Em dias de céu limpo, o Mirante do Leblon e o Forte de Copacabana são alternativas mais tranquilas.",
   },
   {
-    name: "Selina Lapa Rio", tier: "Patrocinado · Hostel design",
-    desc: "Coworking, eventos e quartos compartilhados no coração da Lapa.",
-    preco: "A partir de R$ 120/noite", url: "https://www.selina.com/brazil/lapa-rio/",
-    img: lapaImg,
+    title: "2. Onde provar a verdadeira cozinha carioca",
+    body: "Comece com pastel de camarão e chope no Bar Urca, sentado na mureta. Em um sábado, almoço de feijoada na Casa da Feijoada (Ipanema) é regra. À noite, peça galeto e polenta frita no Galeto Sat's. Para uma experiência refinada, reserve no Oro (Leblon), estrela Michelin.",
+  },
+  {
+    title: "3. Como aproveitar as praias com segurança",
+    body: "Cada posto tem seu público: Posto 9 em Ipanema é jovem e descolado, Posto 6 em Copacabana é família. Leve apenas o essencial — quiosques têm guarda-volumes pago. Bandeira vermelha indica mar perigoso; respeite os guarda-vidas. Hidrate-se sempre.",
+  },
+  {
+    title: "4. Vida noturna além da Lapa",
+    body: "A Lapa é o clássico — mas o Rio noturno vai além. No Comuna (Botafogo), microcervejarias e indie. No Trapiche Gamboa, samba de raiz. Em Ipanema, o Jobi serve até 4h da manhã desde 1956. Use Uber ou taxi: estacionar é difícil e arriscado.",
   },
 ];
 
@@ -123,7 +164,7 @@ const faq = [
   { q: "É seguro andar pela cidade?", a: "Sim, com bom senso. Use aplicativos de transporte à noite, evite ostentar objetos e prefira praias e bairros movimentados." },
   { q: "Como funciona o transporte público?", a: "Metrô atende Centro, Zona Sul e Barra. Use o cartão Riocard ou pagamento por aproximação." },
   { q: "Preciso falar português?", a: "Em hotéis e atrações principais há atendimento em inglês e espanhol, mas algumas palavras em português ajudam muito." },
-  { q: "O TurisRio cobra alguma taxa?", a: "Não. O uso do assistente e dos roteiros é gratuito — alguns hotéis e experiências são patrocinados e estão sinalizados." },
+  { q: "O TurisRio cobra alguma taxa?", a: "Não. O conteúdo é gratuito — alguns hotéis e experiências são patrocinados e estão sinalizados." },
 ];
 
 const supportSchema = z.object({
@@ -134,15 +175,7 @@ const supportSchema = z.object({
   message: z.string().trim().min(10, "Conte um pouco mais").max(2000),
 });
 
-const roteiroSchema = z.object({
-  dias: z.string().min(1).max(3),
-  estilo: z.string().min(1).max(60),
-  interesses: z.string().trim().max(300).optional(),
-});
-
 function Index() {
-  const { user } = useAuth();
-  const ctaTo = user ? "/chat" : "/auth";
   const [activeTags, setActiveTags] = useState<Tag[]>([]);
 
   const filtered = useMemo(() => {
@@ -167,42 +200,47 @@ function Index() {
 
         <div className="relative z-10 max-w-6xl mx-auto px-6 pt-40 pb-24 min-h-[100svh] flex flex-col justify-center">
           <span className="glass-dark inline-flex items-center gap-2 self-start px-4 py-2 rounded-full text-xs uppercase tracking-[0.2em]">
-            <Sparkles className="size-3" /> Assistente digital · Rio de Janeiro
+            <MapPin className="size-3" /> Guia de turismo · Rio de Janeiro
           </span>
           <h1 className="editorial text-5xl sm:text-7xl md:text-8xl mt-6 max-w-4xl text-white drop-shadow-2xl">
-            Viva o Rio<br />
-            <span className="text-gradient-gold italic">do seu jeito.</span>
+            O Rio,<br />
+            <span className="text-gradient-gold italic">de cabo a rabo.</span>
           </h1>
           <p className="mt-6 max-w-xl text-lg text-white/90">
-            Praias douradas, mirantes lendários e roteiros sob medida — desenhados por uma IA que conhece a Cidade Maravilhosa como um carioca.
+            Pontos turísticos, roteiros prontos, eventos, restaurantes e hospedagem — tudo o que você precisa para planejar sua viagem à Cidade Maravilhosa.
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
-            <Link to={ctaTo}
+            <a href="#pontos"
               className="group inline-flex items-center gap-2 gradient-gold text-primary px-6 py-3.5 rounded-full font-semibold shadow-glow hover:scale-[1.02] transition">
-              Conversar com a IA <ArrowRight className="size-4 group-hover:translate-x-1 transition" />
-            </Link>
-            <a href="#pontos" className="glass inline-flex items-center gap-2 text-white px-6 py-3.5 rounded-full font-medium border border-white/20">
-              Explorar pontos turísticos
+              Explorar pontos turísticos <ArrowRight className="size-4 group-hover:translate-x-1 transition" />
+            </a>
+            <a href="#roteiros" className="glass inline-flex items-center gap-2 text-white px-6 py-3.5 rounded-full font-medium border border-white/20">
+              Ver roteiros prontos
             </a>
           </div>
-          <a href="#pontos" aria-label="Rolar para conteúdo"
+          <a href="#intro" aria-label="Rolar para conteúdo"
             className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/80 animate-bounce">
             <ChevronDown className="size-6" />
           </a>
         </div>
       </section>
 
+      {/* INTRODUÇÃO */}
+      <section id="intro" className="max-w-3xl mx-auto px-6 py-24 text-center">
+        <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">Bem-vindo ao Rio</p>
+        <h2 className="editorial text-4xl sm:text-5xl mt-4">A cidade entre o mar e a montanha.</h2>
+        <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
+          Fundado em 1565, o Rio de Janeiro é a única capital do mundo abraçada por uma floresta tropical urbana — a Tijuca. São <strong>23 km de praias</strong>, mais de <strong>40 mirantes</strong>, séculos de história colonial, samba nascido na Pedra do Sal e a maior festa popular do planeta. Este guia reúne o essencial para você viver o Rio como um carioca.
+        </p>
+      </section>
+
       {/* PONTOS TURÍSTICOS com tags */}
-      <section id="pontos" className="max-w-6xl mx-auto px-6 py-24">
-        <div className="flex items-end justify-between flex-wrap gap-4 mb-8">
-          <div>
-            <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">Pontos turísticos</p>
-            <h2 className="editorial text-4xl sm:text-5xl mt-3 max-w-2xl">Cartões-postais, redescobertos.</h2>
-          </div>
-          <Link to={ctaTo} className="text-sm font-medium underline-offset-4 hover:underline">Pedir um roteiro →</Link>
+      <section id="pontos" className="max-w-6xl mx-auto px-6 pb-24">
+        <div className="mb-8">
+          <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">Pontos turísticos</p>
+          <h2 className="editorial text-4xl sm:text-5xl mt-3 max-w-2xl">Cartões-postais imperdíveis.</h2>
         </div>
 
-        {/* Tag filter */}
         <div role="group" aria-label="Filtrar pontos turísticos por interesse" className="flex flex-wrap gap-2 mb-10">
           <button onClick={() => setActiveTags([])}
             className={`px-4 py-1.5 rounded-full text-sm border transition ${activeTags.length === 0 ? "bg-primary text-primary-foreground border-primary" : "bg-card border-border hover:border-primary/40"}`}>
@@ -248,12 +286,65 @@ function Index() {
         </div>
       </section>
 
-      {/* ROTEIRO PERSONALIZADO (form) */}
-      <RoteiroForm ctaTo={ctaTo} />
+      {/* ROTEIROS PRONTOS */}
+      <section id="roteiros" className="bg-secondary/40 py-24">
+        <div className="max-w-6xl mx-auto px-6">
+          <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
+            <RouteIcon className="size-4" /> Roteiros sugeridos
+          </p>
+          <h2 className="editorial text-4xl sm:text-5xl mt-3 max-w-2xl">Itinerários prontos para seguir.</h2>
+          <p className="mt-4 text-muted-foreground max-w-xl">Três roteiros testados para diferentes perfis de viajante. Use como base e ajuste à sua viagem.</p>
+
+          <div className="grid md:grid-cols-3 gap-6 mt-12">
+            {roteiros.map((r) => (
+              <article key={r.titulo} className="bg-card rounded-3xl overflow-hidden shadow-soft flex flex-col">
+                <div className="relative h-44 overflow-hidden">
+                  <img src={r.img} alt={r.titulo} loading="lazy" width={1280} height={896}
+                    className="size-full object-cover" />
+                  <span className="absolute top-3 right-3 glass-dark text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full">
+                    {r.duracao}
+                  </span>
+                </div>
+                <div className="p-6 flex-1 flex flex-col">
+                  <span className="text-xs uppercase tracking-wider text-muted-foreground">{r.publico}</span>
+                  <h3 className="editorial text-xl mt-1">{r.titulo}</h3>
+                  <ol className="mt-4 space-y-1.5 text-sm text-muted-foreground list-decimal list-inside">
+                    {r.paradas.map((p) => <li key={p}>{p}</li>)}
+                  </ol>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* EVENTOS */}
+      <section id="eventos" className="max-w-5xl mx-auto px-6 py-24">
+        <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
+          <Calendar className="size-4" /> Calendário
+        </p>
+        <h2 className="editorial text-4xl sm:text-5xl mt-3">Eventos imperdíveis.</h2>
+        <p className="mt-4 text-muted-foreground max-w-xl">Os principais eventos do calendário carioca, mês a mês.</p>
+
+        <ul className="mt-10 divide-y divide-border/60 border-y border-border/60">
+          {eventos.map((e) => (
+            <li key={e.nome} className="py-5 grid grid-cols-[80px_1fr_auto] gap-4 items-center">
+              <span className="text-xs font-semibold uppercase tracking-wider text-accent-foreground bg-accent/30 px-2.5 py-1 rounded-full text-center">
+                {e.mes}
+              </span>
+              <div>
+                <h3 className="font-semibold">{e.nome}</h3>
+                <p className="text-sm text-muted-foreground">{e.local}</p>
+              </div>
+              <span className="text-sm text-muted-foreground hidden sm:block">{e.preco}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       {/* CULTURA & GASTRONOMIA */}
-      <section className="max-w-6xl mx-auto px-6 py-24">
-        <div className="grid lg:grid-cols-2 gap-10 items-center">
+      <section id="cultura" className="bg-secondary/40 py-24">
+        <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-10 items-center">
           <div className="relative rounded-[2rem] overflow-hidden h-[420px] shadow-soft">
             <img src={gastroImg} alt="Feijoada e caipirinha em um botequim do Rio" loading="lazy" width={1280} height={896}
               className="absolute inset-0 size-full object-cover" />
@@ -286,13 +377,37 @@ function Index() {
         </div>
       </section>
 
+      {/* RESTAURANTES */}
+      <section id="restaurantes" className="max-w-6xl mx-auto px-6 py-24">
+        <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
+          <Utensils className="size-4" /> Restaurantes
+        </p>
+        <h2 className="editorial text-4xl sm:text-5xl mt-3 max-w-2xl">Onde comer no Rio.</h2>
+        <p className="mt-4 text-muted-foreground max-w-xl">Uma seleção de endereços icônicos, do botequim de bairro à alta gastronomia.</p>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-12">
+          {restaurantes.map((r) => (
+            <article key={r.nome} className="bg-card rounded-2xl p-6 shadow-soft">
+              <div className="flex items-baseline justify-between gap-3">
+                <h3 className="font-semibold text-lg">{r.nome}</h3>
+                <span className="text-xs font-mono text-primary">{r.preco}</span>
+              </div>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1">
+                {r.bairro} · {r.cozinha}
+              </p>
+              <p className="text-sm text-muted-foreground mt-3">{r.desc}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
       {/* HOSPEDAGEM PATROCINADA */}
-      <section className="bg-secondary/40 py-24">
+      <section id="hospedagem" className="bg-secondary/40 py-24">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex items-end justify-between flex-wrap gap-4 mb-12">
             <div>
               <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
-                <BadgeCheck className="size-4 text-accent" /> Hospedagem · Parceiros patrocinados
+                <Building2 className="size-4 text-accent" /> Hospedagem · Parceiros patrocinados
               </p>
               <h2 className="editorial text-4xl sm:text-5xl mt-3 max-w-2xl">Onde dormir no Rio.</h2>
             </div>
@@ -332,127 +447,52 @@ function Index() {
         </div>
       </section>
 
-      {/* EXPERIÊNCIAS */}
-      <section className="max-w-6xl mx-auto px-6 py-24">
-        <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">Experiências</p>
-        <h2 className="editorial text-4xl sm:text-5xl mt-3 max-w-2xl">Uma viagem desenhada com inteligência.</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-12">
-          {experiencias.map((e) => (
-            <div key={e.title} className="bg-card rounded-3xl p-6 shadow-soft">
-              <div className="size-11 rounded-2xl gradient-hero grid place-items-center text-primary-foreground">
-                <e.icon className="size-5" />
-              </div>
-              <h3 className="font-semibold mt-4 text-lg">{e.title}</h3>
-              <p className="text-sm text-muted-foreground mt-2">{e.desc}</p>
-            </div>
+      {/* GUIA EDITORIAL — recomendações em formato artigo */}
+      <section id="guia" className="max-w-3xl mx-auto px-6 py-24">
+        <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
+          <BookOpen className="size-4" /> Guia editorial
+        </p>
+        <h2 className="editorial text-4xl sm:text-5xl mt-3">As melhores experiências do Rio.</h2>
+        <p className="mt-4 text-muted-foreground">Recomendações da nossa redação — o que fazer, onde comer e como aproveitar a cidade como quem mora aqui.</p>
+
+        <div className="mt-12 space-y-10">
+          {guia.map((g) => (
+            <article key={g.title}>
+              <h3 className="editorial text-2xl">{g.title}</h3>
+              <p className="mt-3 text-muted-foreground leading-relaxed">{g.body}</p>
+            </article>
           ))}
+        </div>
+
+        <div className="mt-14 flex items-center gap-3 text-sm text-muted-foreground border-t border-border/60 pt-6">
+          <Sun className="size-4 text-accent" />
+          <span>Atualizado mensalmente pela equipe TurisRio.</span>
         </div>
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="max-w-4xl mx-auto px-6 py-24">
-        <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">Perguntas frequentes</p>
-        <h2 className="editorial text-4xl sm:text-5xl mt-3">Tire suas dúvidas.</h2>
-        <Accordion type="single" collapsible className="mt-10">
-          {faq.map((f, i) => (
-            <AccordionItem key={i} value={`item-${i}`}>
-              <AccordionTrigger className="text-left text-base">{f.q}</AccordionTrigger>
-              <AccordionContent className="text-muted-foreground">{f.a}</AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-        <p className="mt-8 text-sm text-muted-foreground">
-          Não encontrou? <Link to={ctaTo} className="text-primary underline inline-flex items-center gap-1">
-            <MessageCircle className="size-3.5" /> Pergunte à IA
-          </Link> ou <a href="#suporte" className="underline">abra um chamado</a>.
-        </p>
+      <section id="faq" className="bg-secondary/40 py-24">
+        <div className="max-w-3xl mx-auto px-6">
+          <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">Perguntas frequentes</p>
+          <h2 className="editorial text-4xl sm:text-5xl mt-3">Tire suas dúvidas.</h2>
+          <Accordion type="single" collapsible className="mt-10">
+            {faq.map((f, i) => (
+              <AccordionItem key={i} value={`item-${i}`}>
+                <AccordionTrigger className="text-left text-base">{f.q}</AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">{f.a}</AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
       </section>
 
       {/* SUPORTE */}
       <SuporteForm />
 
-      {/* CTA */}
-      <section className="max-w-5xl mx-auto px-6 py-24">
-        <div className="relative overflow-hidden rounded-[2.5rem] p-10 sm:p-16 gradient-hero text-primary-foreground shadow-glow">
-          <div className="absolute -top-20 -right-20 size-80 rounded-full opacity-30 gradient-gold blur-3xl" />
-          <div className="relative">
-            <h2 className="editorial text-4xl sm:text-5xl max-w-2xl">Pronto para descobrir o seu Rio?</h2>
-            <p className="mt-4 max-w-xl opacity-90">Crie sua conta e converse com o assistente de IA — roteiros, dicas e favoritos guardados para sua próxima viagem.</p>
-            <Link to={ctaTo} className="inline-flex items-center gap-2 mt-8 bg-white text-primary px-6 py-3.5 rounded-full font-semibold hover:scale-[1.02] transition">
-              Começar agora <ArrowRight className="size-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
       <footer className="border-t border-border/60 py-8 text-center text-sm text-muted-foreground">
-        TurisRio · Guia de viagens com IA · Rio de Janeiro, Brasil
+        TurisRio · Guia de turismo · Rio de Janeiro, Brasil
       </footer>
     </div>
-  );
-}
-
-/* ---------------- ROTEIRO FORM ---------------- */
-function RoteiroForm({ ctaTo }: { ctaTo: "/chat" | "/auth" }) {
-  const [dias, setDias] = useState("3");
-  const [estilo, setEstilo] = useState("Equilibrado");
-  const [interesses, setInteresses] = useState("");
-
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const parsed = roteiroSchema.safeParse({ dias, estilo, interesses });
-    if (!parsed.success) {
-      toast.error(parsed.error.issues[0]?.message ?? "Dados inválidos");
-      return;
-    }
-    const prompt = `Monte um roteiro de ${dias} dia(s) no Rio de Janeiro, estilo ${estilo}.${
-      interesses ? ` Interesses: ${interesses}.` : ""
-    } Inclua horários, preços médios e dicas locais.`;
-    sessionStorage.setItem("turisrio:prompt", prompt);
-    window.location.href = ctaTo;
-  };
-
-  return (
-    <section id="roteiro" className="bg-secondary/40 py-24">
-      <div className="max-w-5xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
-        <div>
-          <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">Experiência personalizada</p>
-          <h2 className="editorial text-4xl sm:text-5xl mt-3">Crie seu roteiro em 30 segundos.</h2>
-          <p className="mt-4 text-muted-foreground max-w-md">Conte como você viaja — a IA monta um itinerário com pontos turísticos, restaurantes e dicas, ajustado ao seu perfil.</p>
-        </div>
-        <form onSubmit={submit} className="bg-card rounded-3xl p-8 shadow-soft space-y-5">
-          <div>
-            <label htmlFor="dias" className="text-sm font-medium">Quantos dias?</label>
-            <select id="dias" value={dias} onChange={(e) => setDias(e.target.value)}
-              className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
-              <option value="1">1 dia</option><option value="2">2 dias</option>
-              <option value="3">3 dias</option><option value="5">5 dias</option>
-              <option value="7">Uma semana</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="estilo" className="text-sm font-medium">Qual seu estilo?</label>
-            <select id="estilo" value={estilo} onChange={(e) => setEstilo(e.target.value)}
-              className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
-              <option>Equilibrado</option><option>Praia & relax</option>
-              <option>Aventura & natureza</option><option>Cultura & história</option>
-              <option>Gastronomia & vida noturna</option><option>Família com crianças</option>
-              <option>Romântico</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="interesses" className="text-sm font-medium">Algo específico? <span className="text-muted-foreground">(opcional)</span></label>
-            <textarea id="interesses" value={interesses} onChange={(e) => setInteresses(e.target.value)}
-              rows={3} maxLength={300} placeholder="Ex.: amo trilhas, adoro samba, quero conhecer o Maracanã…"
-              className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none" />
-          </div>
-          <button type="submit"
-            className="w-full inline-flex items-center justify-center gap-2 gradient-hero text-primary-foreground px-6 py-3.5 rounded-full font-semibold hover:opacity-95 transition">
-            Gerar meu roteiro <Sparkles className="size-4" />
-          </button>
-        </form>
-      </div>
-    </section>
   );
 }
 
@@ -487,7 +527,7 @@ function SuporteForm() {
   };
 
   return (
-    <section id="suporte" className="bg-secondary/40 py-24">
+    <section id="suporte" className="py-24">
       <div className="max-w-5xl mx-auto px-6 grid lg:grid-cols-[1fr_1.2fr] gap-12 items-start">
         <div>
           <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
@@ -495,12 +535,6 @@ function SuporteForm() {
           </p>
           <h2 className="editorial text-4xl sm:text-5xl mt-3">Encontrou um bug? Tem uma dúvida?</h2>
           <p className="mt-4 text-muted-foreground max-w-md">Mande pra gente. Lemos e respondemos cada mensagem — bugs, sugestões, parcerias e dúvidas de viagem.</p>
-
-          <ul className="mt-8 space-y-3 text-sm">
-            <li className="flex gap-3"><Building2 className="size-5 text-primary" /> Parcerias de hospedagem e restaurantes</li>
-            <li className="flex gap-3"><MessageCircle className="size-5 text-primary" /> Dúvidas que não foram cobertas no FAQ</li>
-            <li className="flex gap-3"><LifeBuoy className="size-5 text-primary" /> Bugs ou problemas no app</li>
-          </ul>
         </div>
 
         <form onSubmit={submit} className="bg-card rounded-3xl p-8 shadow-soft space-y-4">
