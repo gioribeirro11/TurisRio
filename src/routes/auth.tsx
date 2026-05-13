@@ -70,7 +70,7 @@ function AuthPage() {
             <span className="size-9 rounded-full glass grid place-items-center"><Mountain className="size-4" /></span>
             <span className="editorial text-xl">TurisRio</span>
           </Link>
-          <h2 className="editorial text-5xl max-w-md drop-shadow-lg">Seu concierge para a Cidade Maravilhosa.</h2>
+          <h2 className="editorial text-5xl max-w-md drop-shadow-lg">Descubra a Cidade Maravilhosa com a ajuda da IA.</h2>
           <p className="opacity-90 mt-4 max-w-md">Roteiros sob medida, favoritos salvos e um assistente de IA dedicado ao Rio.</p>
         </div>
       </div>

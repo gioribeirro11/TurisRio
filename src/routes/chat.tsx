@@ -97,7 +97,7 @@ function ChatPage() {
       if (!resp.ok || !resp.body) {
         if (resp.status === 429) toast.error("Muitas solicitações. Aguarde um instante.");
         else if (resp.status === 402) toast.error("Créditos de IA esgotados.");
-        else toast.error("Falha ao conversar com o Concierge.");
+        else toast.error("Falha ao conversar com o assistente.");
         setMessages(newMessages);
         setStreaming(false);
         return;
@@ -151,7 +151,7 @@ function ChatPage() {
     if (!user) return;
     const name = text.split("\n")[0].replace(/[#*_>`-]/g, "").slice(0, 80) || "Recomendação salva";
     const { error } = await supabase.from("favorites").insert({
-      user_id: user.id, name, description: text.slice(0, 500), category: "Recomendação do Concierge",
+      user_id: user.id, name, description: text.slice(0, 500), category: "Recomendação da IA",
     });
     if (error) toast.error("Não foi possível salvar."); else toast.success("Salvo nos favoritos!");
   }
@@ -191,7 +191,7 @@ function ChatPage() {
                 <div className="size-16 mx-auto rounded-full gradient-hero grid place-items-center text-primary-foreground shadow-glow">
                   <Sparkles className="size-7" />
                 </div>
-                <h1 className="editorial text-4xl mt-6">Olá! Sou seu Concierge do Rio.</h1>
+                <h1 className="editorial text-4xl mt-6">Olá! Sou o assistente do TurisRio.</h1>
                 <p className="text-muted-foreground mt-3">
                   Posso montar roteiros, sugerir restaurantes, dicas de segurança e experiências locais. Por onde começamos?
                 </p>
@@ -211,7 +211,7 @@ function ChatPage() {
                     <div className={`group max-w-[85%] ${m.role === "user" ? "" : "w-full"}`}>
                       {m.role === "assistant" && (
                         <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-2 flex items-center gap-2">
-                          <Sparkles className="size-3" /> Concierge
+                          <Sparkles className="size-3" /> Assistente
                         </p>
                       )}
                       <div className={`px-5 py-4 rounded-3xl whitespace-pre-wrap leading-relaxed ${
@@ -248,7 +248,7 @@ function ChatPage() {
               </button>
             </div>
             <p className="text-[11px] text-muted-foreground text-center mt-2">
-              Concierge de IA. Pode cometer erros — confirme informações importantes.
+              Assistente de IA. Pode cometer erros — confirme informações importantes.
             </p>
           </form>
         </main>

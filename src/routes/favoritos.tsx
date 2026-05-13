@@ -49,8 +49,8 @@ function FavoritosPage() {
             <div className="bg-card rounded-3xl p-12 text-center shadow-soft">
               <Heart className="size-10 mx-auto text-muted-foreground" />
               <h2 className="editorial text-2xl mt-4">Nada salvo ainda</h2>
-              <p className="text-muted-foreground mt-2">Converse com o Concierge e salve as recomendações que mais gostar.</p>
-              <Link to="/chat" className="inline-block mt-6 px-5 py-3 rounded-full bg-primary text-primary-foreground font-medium">Falar com o Concierge</Link>
+              <p className="text-muted-foreground mt-2">Converse com o assistente de IA e salve as recomendações que mais gostar.</p>
+              <Link to="/chat" className="inline-block mt-6 px-5 py-3 rounded-full bg-primary text-primary-foreground font-medium">Abrir assistente de IA</Link>
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 gap-5">
