@@ -77,10 +77,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "TurisRio — Guia de Viagens com IA no Rio de Janeiro" },
       { name: "description", content: "Site de turismo do Rio de Janeiro com ajuda de IA: pontos turísticos, gastronomia, hospedagem e roteiros personalizados." },
       { name: "author", content: "TurisRio" },
-      { property: "og:title", content: "TurisRio — Guia de Viagens com IA no Rio" },
-      { property: "og:description", content: "Roteiros personalizados, dicas locais e um assistente de IA dedicado ao Rio de Janeiro." },
+      { property: "og:title", content: "TurisRio — Guia de Viagens com IA no Rio de Janeiro" },
+      { property: "og:description", content: "Site de turismo do Rio de Janeiro com ajuda de IA: pontos turísticos, gastronomia, hospedagem e roteiros personalizados." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "TurisRio — Guia de Viagens com IA no Rio de Janeiro" },
+      { name: "twitter:description", content: "Site de turismo do Rio de Janeiro com ajuda de IA: pontos turísticos, gastronomia, hospedagem e roteiros personalizados." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6a48c726-18fe-456c-801e-16142858e539/id-preview-b36e035c--0ddb6770-e311-4a0c-9de3-4b8eb9c6c066.lovable.app-1778801614183.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6a48c726-18fe-456c-801e-16142858e539/id-preview-b36e035c--0ddb6770-e311-4a0c-9de3-4b8eb9c6c066.lovable.app-1778801614183.png" },
     ],
     links: [
       {
