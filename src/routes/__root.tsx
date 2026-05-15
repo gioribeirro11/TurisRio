@@ -11,6 +11,7 @@ import {
 import appCss from "../styles.css?url";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "@/components/ui/sonner";
+import { AccessibilityWidget } from "@/components/turisrio/AccessibilityWidget";
 
 function NotFoundComponent() {
   return (
@@ -119,7 +120,9 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <a href="#main-content" className="skip-link">Pular para o conteúdo principal</a>
         <Outlet />
+        <AccessibilityWidget />
         <Toaster richColors position="top-center" />
       </AuthProvider>
     </QueryClientProvider>

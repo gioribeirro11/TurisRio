@@ -26,7 +26,7 @@ function AuthPage() {
   const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => { if (user) router.navigate({ to: "/chat" }); }, [user, router]);
+  useEffect(() => { if (user) router.navigate({ to: "/" }); }, [user, router]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -46,7 +46,7 @@ function AuthPage() {
           },
         });
         if (error) throw error;
-        toast.success("Conta criada! Bem-vindo ao TurisRio.");
+        toast.success("Conta criada! Verifique seu email para confirmar o cadastro.");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
