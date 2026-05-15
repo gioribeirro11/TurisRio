@@ -191,3 +191,82 @@
   .shadow-soft { box-shadow: var(--shadow-soft); }
   .shadow-glow { box-shadow: var(--shadow-glow); }
 }
+
+/* ===== Acessibilidade ===== */
+:root { --a11y-font-scale: 1; }
+
+html { font-size: calc(16px * var(--a11y-font-scale)); }
+
+/* Skip link visível ao focar */
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 1rem;
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-radius: 9999px;
+  font-weight: 600;
+  transition: top 0.2s;
+}
+.skip-link:focus { top: 1rem; outline: 3px solid var(--ring); }
+
+/* Modo alto contraste */
+html.a11y-high-contrast {
+  --background: oklch(0 0 0);
+  --foreground: oklch(1 0 0);
+  --card: oklch(0.08 0 0);
+  --card-foreground: oklch(1 0 0);
+  --muted: oklch(0.15 0 0);
+  --muted-foreground: oklch(0.95 0 0);
+  --border: oklch(1 0 0);
+  --primary: oklch(0.95 0.2 90);
+  --primary-foreground: oklch(0 0 0);
+  --accent: oklch(0.95 0.2 90);
+  --secondary: oklch(0.12 0 0);
+}
+html.a11y-high-contrast img { filter: contrast(1.1); }
+
+/* Modo leitura simplificada (autismo / TDAH) — remove gradientes, animações e imagens decorativas */
+html.a11y-calm * {
+  animation: none !important;
+  transition: none !important;
+}
+html.a11y-calm .glass,
+html.a11y-calm .glass-dark {
+  background: var(--card) !important;
+  backdrop-filter: none !important;
+  color: var(--foreground) !important;
+}
+html.a11y-calm .gradient-hero,
+html.a11y-calm .gradient-gold,
+html.a11y-calm [style*="gradient"] { background: var(--card) !important; }
+html.a11y-calm .text-gradient-gold { color: var(--foreground) !important; -webkit-text-fill-color: var(--foreground) !important; }
+
+/* Fonte amigável para dislexia */
+html.a11y-dyslexia,
+html.a11y-dyslexia body,
+html.a11y-dyslexia * {
+  font-family: "Atkinson Hyperlegible", "Verdana", "Tahoma", sans-serif !important;
+  letter-spacing: 0.02em !important;
+  word-spacing: 0.1em !important;
+  line-height: 1.7 !important;
+}
+
+/* Respeita preferência de movimento reduzido do SO */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Foco visível reforçado em qualquer elemento interativo */
+a:focus-visible, button:focus-visible, input:focus-visible,
+textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
