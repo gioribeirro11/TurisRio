@@ -129,15 +129,24 @@ const hospedagens = [
   { name: "Belmond Copacabana Palace", tier: "Patrocinado · Luxo",
     desc: "Ícone art déco em frente a Copacabana, piscina histórica e spa premiado.",
     preco: "A partir de R$ 2.890/noite",
-    url: "https://www.belmond.com/hotels/south-america/brazil/rio-de-janeiro/belmond-copacabana-palace/", img: hotelImg },
+    desconto: "10% OFF com o cupom TURISRIO10",
+    cupom: "TURISRIO10",
+    url: "https://www.belmond.com/hotels/south-america/brazil/rio-de-janeiro/belmond-copacabana-palace/",
+    img: hotelImg },
   { name: "Hotel Fasano Ipanema", tier: "Patrocinado · Boutique",
     desc: "Design assinado por Philippe Starck, rooftop com vista para o Arpoador.",
     preco: "A partir de R$ 1.950/noite",
-    url: "https://www.fasano.com.br/hospedagem/rio-de-janeiro", img: sugarloafImg },
+    desconto: "15% OFF em estadias de 3+ noites",
+    cupom: "TURISRIO15",
+    url: "https://www.fasano.com.br/hospedagem/rio-de-janeiro",
+    img: sugarloafImg },
   { name: "Selina Lapa Rio", tier: "Patrocinado · Hostel design",
     desc: "Coworking, eventos e quartos compartilhados no coração da Lapa.",
     preco: "A partir de R$ 120/noite",
-    url: "https://www.selina.com/brazil/lapa-rio/", img: lapaImg },
+    desconto: "20% OFF na 1ª reserva",
+    cupom: "RIO20",
+    url: "https://www.selina.com/brazil/lapa-rio/",
+    img: lapaImg },
 ];
 
 const guia = [
@@ -190,8 +199,9 @@ function Index() {
     <div className="min-h-screen bg-background">
       <Nav />
 
+      <main id="main-content">
       {/* HERO */}
-      <section className="relative min-h-[100svh] overflow-hidden">
+      <section aria-label="Apresentação" className="relative min-h-[100svh] overflow-hidden">
         <img src={heroImg} alt="Vista aérea do Rio de Janeiro com o Pão de Açúcar e Copacabana ao pôr do sol"
           width={1792} height={1024}
           className="absolute inset-0 size-full object-cover" />
@@ -418,10 +428,10 @@ function Index() {
 
           <div className="grid md:grid-cols-3 gap-6">
             {hospedagens.map((h) => (
-              <a key={h.name} href={h.url} target="_blank" rel="noopener noreferrer sponsored"
+              <article key={h.name}
                 className="group relative bg-card rounded-3xl overflow-hidden shadow-soft border border-accent/20 hover:border-accent/60 transition flex flex-col">
                 <div className="relative h-48 overflow-hidden">
-                  <img src={h.img} alt={h.name} loading="lazy" width={1280} height={896}
+                  <img src={h.img} alt={`Foto de ${h.name}`} loading="lazy" width={1280} height={896}
                     className="size-full object-cover group-hover:scale-105 transition duration-700" />
                   <span className="absolute top-3 left-3 inline-flex items-center gap-1 gradient-gold text-primary text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
                     <BadgeCheck className="size-3" /> {h.tier}
@@ -429,15 +439,34 @@ function Index() {
                 </div>
                 <div className="p-6 flex-1 flex flex-col">
                   <h3 className="font-semibold text-lg">{h.name}</h3>
-                  <p className="text-sm text-muted-foreground mt-2 flex-1">{h.desc}</p>
+                  <p className="text-sm text-muted-foreground mt-2">{h.desc}</p>
+                  <div className="mt-4 p-3 rounded-xl bg-accent/15 border border-accent/30">
+                    <p className="text-xs uppercase tracking-wider text-accent-foreground/80">Desconto exclusivo TurisRio</p>
+                    <p className="text-sm font-semibold mt-1">{h.desconto}</p>
+                    <div className="mt-2 flex items-center gap-2">
+                      <code className="px-2 py-1 bg-background rounded text-xs font-mono">{h.cupom}</code>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard?.writeText(h.cupom);
+                          toast.success(`Cupom ${h.cupom} copiado!`);
+                        }}
+                        className="text-xs underline text-muted-foreground hover:text-foreground"
+                      >
+                        Copiar cupom
+                      </button>
+                    </div>
+                  </div>
                   <div className="mt-4 flex items-center justify-between text-sm">
                     <span className="font-semibold text-primary">{h.preco}</span>
-                    <span className="inline-flex items-center gap-1 text-accent-foreground/80 group-hover:text-primary">
-                      Reservar <ExternalLink className="size-3.5" />
-                    </span>
+                    <a href={h.url} target="_blank" rel="noopener noreferrer sponsored"
+                      aria-label={`Reservar no site oficial de ${h.name} (abre em nova aba)`}
+                      className="inline-flex items-center gap-1.5 bg-primary text-primary-foreground px-4 py-2 rounded-full font-medium hover:opacity-90">
+                      Reservar <ExternalLink className="size-3.5" aria-hidden="true" />
+                    </a>
                   </div>
                 </div>
-              </a>
+              </article>
             ))}
           </div>
 
@@ -489,6 +518,7 @@ function Index() {
       {/* SUPORTE */}
       <SuporteForm />
 
+      </main>
       <footer className="border-t border-border/60 py-8 text-center text-sm text-muted-foreground">
         TurisRio · Guia de turismo · Rio de Janeiro, Brasil
       </footer>
