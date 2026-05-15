@@ -138,14 +138,14 @@ const hospedagens = [
     preco: "A partir de R$ 1.950/noite",
     desconto: "15% OFF em estadias de 3+ noites",
     cupom: "TURISRIO15",
-    url: "https://www.fasano.com.br/hospedagem/rio-de-janeiro",
+    url: "https://www.booking.com/hotel/br/fasano-rio-de-janeiro.pt-br.html",
     img: sugarloafImg },
   { name: "Selina Lapa Rio", tier: "Patrocinado · Hostel design",
     desc: "Coworking, eventos e quartos compartilhados no coração da Lapa.",
     preco: "A partir de R$ 120/noite",
     desconto: "20% OFF na 1ª reserva",
     cupom: "RIO20",
-    url: "https://www.selina.com/brazil/lapa-rio/",
+    url: "https://www.booking.com/searchresults.pt-br.html?ss=Lapa%2C+Rio+de+Janeiro",
     img: lapaImg },
 ];
 
